@@ -22,15 +22,14 @@ import {
     }
 
     // This gets a provider by email
-    // this function is called by a function in userController
     export const getProviderByEmail = async (req, res) => {
         try {
             const provider = await Provider.findOne({ email: req.params.email });
             if (!provider) {
-                // return handleNotFound(res, "Provider not found");
-                return {"err": "provider not found"};
+                return handleNotFound(res, "Provider not found");
             }
-            return provider
+
+            return handleSuccess(res, provider);
         } catch (error) {
             return handleServerError(res, error);
         }

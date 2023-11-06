@@ -99,8 +99,7 @@ export const postJobs = async (req, res) => {
             categories,
             job_type,
             time,
-            date_posted,
-            hired: false
+            date_posted
         });
         console.log(title, job_poster, description)
 
@@ -164,7 +163,7 @@ export const updateJobs = async (req, res) => {
 export const applytoJobs = async (req, res) => {
     const seeker_id = req.params.seeker_id
     const job_id = req.params.job_id
-    // first, should check if they are the job seeker
+
     try {
         const job = await Jobs.findById(job_id);
     
