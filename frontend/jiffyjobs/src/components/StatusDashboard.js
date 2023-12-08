@@ -9,6 +9,8 @@ import check from '../images/Check.png'
 import clock from '../images/Clock.png'
 import x from '../images/X.png'
 
+import { JobDescriptionPopup } from './popupCards/jobDescriptionPopup';
+
 export function StatusDashboard() {
     const [statusData, setStatusData] = useState([]) 
     const [prevSize, setPrevSize] = useState([])
