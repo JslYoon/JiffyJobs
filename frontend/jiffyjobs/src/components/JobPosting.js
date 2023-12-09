@@ -623,6 +623,7 @@ export function JobPosting( { onJobDataSubmit } ) {
 
     const handleSearchClick = () => {
         // search stuff
+        // asad 2
         onJobDataSubmit(searchInput);
     };
     
@@ -646,6 +647,7 @@ export function JobPosting( { onJobDataSubmit } ) {
                                     value={searchInput} 
                                     onChange={handleSearchInputChange}
                                     onKeyDown={(e) => {
+                                        // asad 1
                                         if (e.key === 'Enter') {
                                             handleSearchClick();
                                         }

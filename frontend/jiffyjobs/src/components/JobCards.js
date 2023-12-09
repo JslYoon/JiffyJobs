@@ -8,7 +8,6 @@ export function JobCards ({ jobData, page, cardsPerPage, openPopUp }) {
 
     const isLastPageNotFull = pageJobData.length < cardsPerPage;
     const emptySlots = isLastPageNotFull ? cardsPerPage - pageJobData.length : 0;
-
     return (    
         <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}> 
             <Grid container sx={{ maxWidth: 'lg', justifyContent: 'center', columnGap: '50px', marginTop: '25px', marginLeft: '-25px'}}> 

@@ -2,13 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-import ClearIcon from '@mui/icons-material/Clear';
-import StarBorderRounded from '@mui/icons-material/StarBorderRounded';
-import StarRoundedIcon from "@mui/icons-material/StarRounded"
-import { Dialog, Divider, Typography, DialogContentText, DialogContent, 
-        DialogActions, DialogTitle, Link, Button, Pagination, Grid, 
-        CardContent, Card, Box, IconButton, Chip, TextField, Avatar,
-        Stack, CardMedia } from '@mui/material';
+import { Box, Typography, Divider, Pagination } from '@mui/material';
 
 import dayjs from 'dayjs';
 
@@ -17,8 +11,8 @@ import { Sort } from '../components/Sort';
 import { JobPosting } from '../components/JobPosting';
 import { JobCards } from '../components/JobCards';
 import { CongratsPopup } from '../components/CongratsPopup';
-import { SubmitProfilePopup } from '../components/popupCards/submitProfilePopup';
-import { JobDescriptionPopup } from '../components/popupCards/jobDescriptionPopup';
+import { SubmitProfilePopup } from '../components/SubmitPopup';
+import { JobPopup } from '../components/JobPopup';
 
 export function JobBoard() {
     const [jobData, setJobData] = useState([])
@@ -40,13 +34,9 @@ export function JobBoard() {
     const [openCongratsPopup, setOpenCongratsPopup] = useState(false);
 
     const [isJobSaved, setIsJobSaved] = useState({});
-    const [showSavedMessage, setShowSavedMessage] = useState(false);
 
     const [ userEmail, setUserEmail ] = useState(localStorage.getItem("email"));
     const [ userRole, setUserRole ] = useState(localStorage.getItem("user"));
-
-    const [savedJobs, setSavedJobs] = useState([]) 
-    const [jobSaved, setJobSaved] = useState(false)
 
     const navigate = useNavigate();
 
@@ -88,11 +78,6 @@ export function JobBoard() {
             .catch((error) => {
                 console.log(error)
             })
-    };
-
-    // go to dashboard
-    const handleToDashboard = () => {
-        navigate('/dashboard');
     };
 
     // random image for category
@@ -209,8 +194,6 @@ export function JobBoard() {
     
     // open popup
     const openPopUp = (key) => {
-        setCurrentPop(key);
-        console.log(currentPop);
         if (!userEmail) {
             toast.dismiss()
             console.log("here")
@@ -225,37 +208,17 @@ export function JobBoard() {
                 theme: "light",
             });
         } else {
+            setCurrentPop(key);
+            console.log(currentPop);
             setOpenPop(true);
         }
     }
 
-    const descriptionElementRefStartPop = React.useRef(null)
-    useEffect(() => {
-        if (openPopUp) {
-            const { current: descriptionElement } = descriptionElementRefStartPop
-            if (descriptionElement !== null) {
-                descriptionElement.focus();
-            }
-        }
-    }, [openPopUp])
-
-    // function handleLogJobData() {
-    //     console.log('Data', jobData)
-    //     console.log('Raw', rawData)
-    //     console.log('Job Saved', isJobSaved)
-    // }
-
-    useEffect(()=> {
-        console.log(userEmail);
-        console.log(userRole);
-        console.log(savedJobs);
-    },[])
-
     // open submit profile popup
     const handleOpenSubmitProfile = () => {
-         if (userRole === 'provider') {
+        if (userRole === 'provider') {
             toast.dismiss()
-            toast.error('You can only apply as a Seeker!', {
+            toast.error('You can only apply to jobs as a Seeker!', {
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -297,8 +260,6 @@ export function JobBoard() {
     };
 
     const handleSubmitProfile = () => {
-        handleCloseSubmitProfile();
-        setOpenCongratsPopup(true);
         const user = {
             method: "PUT",
             headers: { 'Content-Type': 'application/json' },
@@ -318,7 +279,8 @@ export function JobBoard() {
             return res;
         })
         .then((data) => {
-            console.log(data);
+            handleCloseSubmitProfile();
+            setOpenCongratsPopup(true);
         })
         .catch((error) => {
             const err = error.message;
@@ -349,106 +311,9 @@ export function JobBoard() {
         });
 
     };
-
-    // toggle save job
-    const toggleSaveJob = async (jobDetails) => {
-        
-        // setShowSavedMessage(true);
-        // setTimeout(() => setShowSavedMessage(false), 1000);
-        if (userRole === "provider") {
-            toast.dismiss()
-            toast.error('You can only save jobs as a Seeker!', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-        } else {
-            const save = {
-                method: "PUT",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: userEmail,
-                    job_id: jobDetails
-                })
-            }
-
-            const route = "https://jiffyjobs-api-production.up.railway.app/api/users/save";
-            await fetch(route, save)
-            .then(async (response) => {
-                const res = await response.json()
-                if (!response.ok) {
-                    throw new Error(res.message);
-                } 
-                return res;
-            })
-            .then(async (data) => {
-                await getJobs();
-                await setJobSaved(savedJobs.includes(jobDetails));
-                setIsJobSaved(prevState => ({
-                    ...prevState,
-                    [jobDetails]: !prevState[jobDetails] 
-                }));
-
-
-                setShowSavedMessage(true);
-                setTimeout(() => setShowSavedMessage(false), 1000);
-
-                console.log("here");
-            }).catch((error) => {
-                console.log(error);
-            });
-            console.log(jobDetails)
-        }
-    };
-
-    async function getJobs() {
-        const route = `https://jiffyjobs-api-production.up.railway.app/api/users/saved/${userEmail}`
-
-        fetch(route)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                const newJobData = data.map(function(obj) {
-                    return obj._id
-                });
-                setSavedJobs(newJobData);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-    }
-
-    useEffect(() => {
-        if (userEmail) {
-            getJobs();
-        }
-    }, [userEmail]);
-
     
     return (
         <div className={`outerCard2 ${openPop ? 'blur-background' : ''}`}>
-            <JobDescriptionPopup
-                closePop={closePop}
-                openSubmitProfile={openSubmitProfile}
-                handleOpenSubmitProfile={handleOpenSubmitProfile}
-                openCongratsPopup={openCongratsPopup}
-                currentPop={currentPop}
-                descriptionElementRefStartPop={descriptionElementRefStartPop}
-                toggleSaveJob={toggleSaveJob}
-                savedJobs={savedJobs}
-                jobSaved={jobSaved}
-                openPop={openPop}
-                showSavedMessage={showSavedMessage}
-            />
             <JobPosting onJobDataSubmit={handleJobPostingData} /> 
             <Box className='job-table-box'>
                 <div className='job-table-inner' style={{ paddingTop: '50px', width: '1136px'}}>
@@ -467,14 +332,14 @@ export function JobBoard() {
                     </div>
                     <Divider width='1136px'/>
                 </div>
-                {/* <button onClick={handleLogJobData}>Log Job Data</button> */}
             </Box>
             <JobCards jobData={jobData} page={page} cardsPerPage={cardsPerPage} openPopUp={openPopUp}/>
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '1%', background: '#f3f3f3', fontFamily: 'Outfit', fontSize: '14px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '1%', fontFamily: 'Outfit', fontSize: '14px' }}>
                 <Pagination count={totalPages} page={page} onChange={(event, value) => setPage(value)}  className="custom-pagination" />
             </div>
             {openSubmitProfile && (<SubmitProfilePopup open={openSubmitProfile} onClose={handleCloseSubmitProfile} onSubmit={handleSubmitProfile} profile={profile}/>)}
-            {openCongratsPopup && (<CongratsPopup open={openCongratsPopup} onClose={() => setOpenCongratsPopup(false)} onDashboardRedirect={handleToDashboard}/>)}
+            {openCongratsPopup && (<CongratsPopup open={openCongratsPopup} onClose={() => setOpenCongratsPopup(false)} />)}
+            {openPop && (<JobPopup open={openPop} onClose={closePop} openPopUp={openPopUp} currentPop={currentPop} openSubmitProfile={openSubmitProfile} openCongratsPopup={openCongratsPopup} openSubmit={handleOpenSubmitProfile} />)}
         </div>
     )
 }
