@@ -7,22 +7,22 @@ import StarRoundedIcon from "@mui/icons-material/StarRounded"
 import { Dialog, Divider, Typography, DialogContentText, 
         DialogContent, DialogActions,Link, Button, CardContent, 
         Card, IconButton, Chip,CardMedia } from '@mui/material';
+import reject from '../images/Reject.png';
 
-export function JobPopup({open, onClose, openPopUp, currentPop, openSubmitProfile, openCongratsPopup, openSubmit}) {
+export function JobPopup({open, onClose, openPopUp, currentPop, openSubmitProfile, openCongratsPopup, openSubmit, jobData}) {
     const [ userEmail, setUserEmail ] = useState(localStorage.getItem("email"));
     const [ userRole, setUserRole ] = useState(localStorage.getItem("user"));
     const [showSavedMessage, setShowSavedMessage] = useState(false);
     const [savedJobs, setSavedJobs] = useState([]) 
     const [jobSaved, setJobSaved] = useState(false)
 
-    useEffect(() => {
-        console.log(currentPop)
-    })
 
     const toggleSaveJob = async (jobDetails) => {
         if (userRole === "provider") {
             toast.dismiss()
             toast.error('You can only save jobs as a Seeker!', {
+                icon: ({theme, type}) =>  <img src={reject} style={{ width: '24px', height: '24px', marginRight: '10px', marginBottom:'6px'}}/>,
+                progressStyle: {backgroundColor: '#C12020'},
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -91,6 +91,7 @@ export function JobPopup({open, onClose, openPopUp, currentPop, openSubmitProfil
         if (userEmail) {
             getJobs();
         }
+
     }, [userEmail]);
 
     const descriptionElementRefStartPop = React.useRef(null)
@@ -209,7 +210,7 @@ export function JobPopup({open, onClose, openPopUp, currentPop, openSubmitProfil
                 </div>
                 </div>
                 
-                </DialogContentText>
+            </DialogContentText>
                 </DialogContent>
             
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '6.58px' }}>
@@ -217,20 +218,31 @@ export function JobPopup({open, onClose, openPopUp, currentPop, openSubmitProfil
                         <Divider/>
                         </div>
                 </div>
-
+            { currentPop.length === 8 && currentPop[7][1] !== "submitted" ?
+               <div></div>
+            :
             <DialogActions style={{ justifyContent: 'center', marginBottom: '6.58px', marginTop: '6.58px' }}>
                 <Link style={{cursor:'pointer'}} underline='none'>
                     <Card sx={{height: 35, width: '100%'}} style={{overflow:'hidden', borderRadius: '6.63px', background: "#4A4FE4", color: 'white'}}>
-                    <CardContent style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-                        <Button onClick={openSubmit} style={{ textTransform: 'none', width: '100%' }}>
-                            <Typography style={{ fontFamily: 'Outfit', fontSize: '13.268ppx', color: 'white', fontWeight: '400', marginTop: '-16px' }}>
-                                Submit Profile
-                            </Typography>
-                        </Button>
-                    </CardContent>
+                        <CardContent style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                            <Button onClick={openSubmit} style={{ textTransform: 'none', width: '100%' }}>
+                                { currentPop.length === 8 && currentPop[7][1]  === "submitted" ?  
+                                    <Typography style={{ fontFamily: 'Outfit', fontSize: '13.268ppx', color: 'white', fontWeight: '400', marginTop: '-16px' }}>
+                                    Withdraw Application
+                                    </Typography>
+                                :
+                                    <Typography style={{ fontFamily: 'Outfit', fontSize: '13.268ppx', color: 'white', fontWeight: '400', marginTop: '-16px' }}>
+                                    Submit Profile
+                                    </Typography>
+                                }
+                            
+                            </Button>
+                        </CardContent>
                     </Card>
                 </Link>
             </DialogActions>
+           
+            }
     </Dialog>
     )
 }

@@ -12,12 +12,10 @@ import { Dialog, DialogActions, DialogContent, DialogTitle,
        Card, Grid, Chip, Divider, MenuItem, InputAdornment, 
        Box, Select, FormControl, FormHelperText, Button } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
-import FilterListIcon from '@mui/icons-material/FilterList';
-
-
+import reject from '../images/Reject.png';
+import accept from '../images/Accept.png';
 
 import dayjs from 'dayjs';
-import { useNavigate } from 'react-router-dom';
 var objectSupport = require("dayjs/plugin/objectSupport");
 dayjs.extend(objectSupport);
 
@@ -123,10 +121,10 @@ export function JobPosting( { onJobDataSubmit } ) {
     // changes the vals for all except date, time, and search components
     function handleValues(event) {
         const { id, value } = event.target;
-    
+
         setVal(prevVal => {
             let updatedVal = { ...prevVal };
-    
+
             if (id === 'pay') {
                 const re = /^[0-9]*(\.[0-9]{0,2})?$/;
                 if (value === "" || (re.test(value) && parseFloat(value) >= 0)) {
@@ -135,10 +133,18 @@ export function JobPosting( { onJobDataSubmit } ) {
             } else {
                 updatedVal[id] = value;
             }
-    
+
             return updatedVal;
         });
+
+        setError(prevError => {
+            return {
+                ...prevError,
+                [`${id}Error`]: value.trim() === '' 
+            };
+        });
     }
+
 
     // changes the values for search input
     const handleSearchInputChange = (event) => {
@@ -154,8 +160,15 @@ export function JobPosting( { onJobDataSubmit } ) {
 
     // handles the category change
     const handleCategoryChange = (event) => {
-        setSelectedCategories(event.target.value); 
-   };
+        const selected = event.target.value;
+        setSelectedCategories(selected);
+    
+        setError(prevError => ({
+            ...prevError,
+            categoryError: selected.length === 0
+        }));
+    };
+    
 
    // handles the delete category
    const handleDeleteCategory = (categoryToDelete) => {
@@ -166,6 +179,7 @@ export function JobPosting( { onJobDataSubmit } ) {
     function handleDate(event) {
         const newDate = dayjs(event);
         setSelectedDate(newDate);
+    
         setVal(prevVal => ({
             ...prevVal,
             date: {
@@ -176,12 +190,18 @@ export function JobPosting( { onJobDataSubmit } ) {
             startTime: prevVal.startTime,
             endTime: prevVal.endTime
         }));
+    
+        setError(prevError => ({
+            ...prevError,
+            dateError: !newDate.isValid()
+        }));
     }
 
     // handles the start time
     function handleStartTime(time) {
         const newStartTime = dayjs(time);
         setStartTime(newStartTime);
+    
         setVal(prevVal => ({
             ...prevVal,
             startTime: {
@@ -189,18 +209,29 @@ export function JobPosting( { onJobDataSubmit } ) {
                 min: newStartTime.minute()
             }
         }));
+    
+        setError(prevError => ({
+            ...prevError,
+            startTimeError: !newStartTime.isValid() || (selectedDate && newStartTime.isBefore(dayjs(selectedDate)))
+        }));
     }
     
     // handles the end time
     function handleEndTime(time) {
         const newEndTime = dayjs(time);
         setEndTime(newEndTime);
+    
         setVal(prevVal => ({
             ...prevVal,
             endTime: {
                 hour: newEndTime.hour(),
                 min: newEndTime.minute()
             }
+        }));
+    
+        setError(prevError => ({
+            ...prevError,
+            endTimeError: !newEndTime.isValid() || (startTime && newEndTime.isBefore(dayjs(startTime)))
         }));
     }
 
@@ -211,6 +242,8 @@ export function JobPosting( { onJobDataSubmit } ) {
         } else {
             toast.dismiss()
             toast.error('Please login to post!', {
+                icon: ({theme, type}) =>  <img src={reject} style={{ width: '24px', height: '24px', marginRight: '10px', marginBottom:'6px'}}/>,
+                progressStyle: {backgroundColor: '#C12020'},
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -226,7 +259,17 @@ export function JobPosting( { onJobDataSubmit } ) {
     // closes the pop up
     const closePop = () => {
         empytyVals()
-        handleError()
+        setError({ 
+            titleError: false,
+            nameError: false,
+            locationError: false,
+            payError: false,
+            descriptionError: false,
+            categoryError: false,
+            dateError: false,
+            startTimeError: false,
+            endTimeError: false,
+        });
         setOpenStartPop(false)
     }
 
@@ -250,6 +293,18 @@ export function JobPosting( { onJobDataSubmit } ) {
 
     // closes the next pop up
     const closeNextPop = () => {
+        empytyVals()
+        setError({
+            titleError: false,
+            nameError: false,
+            locationError: false,
+            payError: false,
+            descriptionError: false,
+            categoryError: false,
+            dateError: false,
+            startTimeError: false,
+            endTimeError: false,
+        });
         setOpenSecondPop(false)
     }
 
@@ -363,7 +418,7 @@ export function JobPosting( { onJobDataSubmit } ) {
                     <DialogTitle style={{width: "90%", fontFamily: 'Outfit', fontSize: '20px', fontWeight: 500, color: 'black'}}> 
                         Tell us more about the job!
                     </DialogTitle>
-                    <IconButton onClick={closeNextPop}>
+                    <IconButton onClick={closeNextPop} style={{color: '#4A4FE4'}}> 
                         <ClearIcon/>
                     </IconButton>
                 </div>
@@ -559,27 +614,26 @@ export function JobPosting( { onJobDataSubmit } ) {
         const hasTitleError = val.title === '';
         const hasNameError = val.name === '';
         const hasLocationError = val.location === '';
-        const hasPayError = val.pay === '' || val.pay === 0;
+        const hasPayError = val.pay === '' || parseFloat(val.pay) <= 0;
         const hasDescriptionError = val.description === '';
         const hasCategoryError = selectedCategories.length === 0;
-        const hasDateError = !selectedDate 
-        const hasStartTimeError = !startTime;
-        const isEndTimeInvalid = startTime && endTime && dayjs(endTime).isBefore(dayjs(startTime));
-        const isTimeError = !endTime || isEndTimeInvalid;
+        const hasDateError = !selectedDate;
+        const isStartTimeToday = startTime && selectedDate && dayjs(selectedDate).isSame(dayjs(), 'day') && dayjs(startTime).isBefore(dayjs());
+        const isEndTimeInvalid = !endTime || (startTime && endTime && dayjs(endTime).isBefore(dayjs(startTime)));
 
-        if (hasTitleError || hasNameError || hasLocationError || hasPayError || hasDescriptionError || hasCategoryError || hasDateError || hasStartTimeError || isTimeError) {
-            setError({
-                titleError: hasTitleError,
-                nameError: hasNameError,
-                locationError: hasLocationError,
-                payError: hasPayError,
-                descriptionError: hasDescriptionError,
-                categoryError: hasCategoryError,
-                dateError: hasDateError,
-                startTimeError: hasStartTimeError,
-                endTimeError: isTimeError,
-            });
+        setError({
+            titleError: hasTitleError,
+            nameError: hasNameError,
+            locationError: hasLocationError,
+            payError: hasPayError,
+            descriptionError: hasDescriptionError,
+            categoryError: hasCategoryError,
+            dateError: hasDateError,
+            startTimeError: !startTime || isStartTimeToday,
+            endTimeError: isEndTimeInvalid,
+        });
 
+        if (hasTitleError || hasNameError || hasLocationError || hasPayError || hasDescriptionError || hasCategoryError || hasDateError || !startTime || !endTime || isStartTimeToday || isEndTimeInvalid) {
             return;
         }
 
@@ -610,6 +664,19 @@ export function JobPosting( { onJobDataSubmit } ) {
             fetch(route, requestOptions)
                 .then((response) => {
                     response.json()
+                    toast.dismiss()
+                    toast.success('Your job has been posted!', {
+                        icon: ({theme, type}) =>  <img src={accept} style={{ width: '24px', height: '24px', marginRight: '10px', marginBottom:'6px'}}/>,
+                        progressStyle: {backgroundColor: '#66C120'},
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
                     empytyVals()
                     setOpenStartPop(false)
                     setOpenSecondPop(false)
@@ -663,7 +730,7 @@ export function JobPosting( { onJobDataSubmit } ) {
                                         style: {  borderRadius: '11px', fontFamily: 'Outfit', fontSize: '18px' }
                                     }}
                                 />
-                                <Card sx={{ width: '140px', height: '60px' }} style={{borderRadius: '8px', background: "#4348DB", color: 'white', display: 'flex', justifyContent: 'center', }}>
+                                <Card sx={{ width: '140px', height: '58px' }} style={{borderRadius: '8px', background: "#4348DB", color: 'white', display: 'flex', justifyContent: 'center', cursor:'pointer'}}>
                                     <CardContent onClick={openPop} style={{marginTop: '2px', fontFamily: 'Outfit', fontSize: '18px', fontWeight: 400}}> 
                                         Post a Job
                                     </CardContent>

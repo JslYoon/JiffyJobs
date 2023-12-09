@@ -178,7 +178,7 @@ export const allAppliedJobs = async(req, res) => {
             // Determine the status based on the conditions provided
             if (job.acceptedApplicant === userEmail) {
                 jobWithStatus.status = 'accepted';
-            } else if (job.time[0] < currentDateTime && job.acceptedApplicant === "" && !job.rejectedApplicants.includes(userEmail)) {
+            } else if (job.time[0] < currentDateTime && job.hired === false && !job.rejectedApplicants.includes(userEmail)) {
                 jobWithStatus.status = 'submitted';
             } else {
                 jobWithStatus.status = 'rejected';

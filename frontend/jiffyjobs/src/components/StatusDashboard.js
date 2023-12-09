@@ -8,6 +8,7 @@ import submittedPicture from '../images/Submitted.png';
 import rejectedPicture from '../images/Rejected.png';
 import { CongratsPopup } from './CongratsPopup';
 import { SubmitProfilePopup } from './SubmitPopup';
+import { WithdrawPopup } from './confirmWithdrawPopup';
 
 import { JobPopup } from './JobPopup';
 import check from '../images/Check.png';
@@ -126,6 +127,11 @@ export function StatusDashboard() {
     setOpenSubmitProfile(false);
     };
 
+    // random image for category
+    const randomImage = (seed) => {
+        return `https://source.unsplash.com/random?${seed}`;
+    };
+
     useEffect(() => {
         async function getJobs() {
             const email = localStorage.getItem("email")
@@ -140,7 +146,7 @@ export function StatusDashboard() {
                 })
                 .then((data) => {
                     const newJobData = data.map(function(obj) {
-                        return [[0, obj.title], ["", obj.job_poster], ["", obj.location], ["", obj.pay], ["", obj.description], ["", dayjs(new Date(obj.time[0])).format('MM/DD/YY h:mm A')  + " " + " - " + dayjs(new Date(obj.time[1])).format('h:mm A')], ["", obj.categories.toString()], ["", obj.status]]
+                        return [[0, obj.title], [randomImage(obj.categories.toString().split(",")[0]), obj.job_poster], ["", obj.location], ["", obj.pay], ["", obj.description], ["", dayjs(new Date(obj.time[0])).format('MM/DD/YY h:mm A')  + " " + " - " + dayjs(new Date(obj.time[1])).format('h:mm A')], ["", obj.categories.toString()], ["", obj.status]]
                     });
                     setStatusData(newJobData)
                     setPrevSize(newJobData.length)
@@ -157,7 +163,7 @@ export function StatusDashboard() {
     }, [statusData]);
 
     return (
-        <div className={` ${openPop ? 'blur-background' : ''}`}>
+        <div>
             <div className='header-one'>
                 Progress
             </div>
@@ -215,9 +221,9 @@ export function StatusDashboard() {
                     })}
                 </Grid>
             </Box>
-            {/* {openSubmitProfile && (<SubmitProfilePopup open={openSubmitProfile} onClose={handleCloseSubmitProfile} onSubmit={handleSubmitProfile} profile={profile}/>)} */}
-            {/* {openCongratsPopup && (<CongratsPopup open={openCongratsPopup} onClose={() => setOpenCongratsPopup(false)} />)} */}
-            {openPop && (<JobPopup open={openPop} onClose={closePop} openPopUp={openPopUp} currentPop={currentPop} openSubmitProfile={openSubmitProfile} openCongratsPopup={openCongratsPopup} openSubmit={handleOpenSubmitProfile} />)}
+            {openSubmitProfile && (<WithdrawPopup open={openSubmitProfile} onClose={handleCloseSubmitProfile} onSubmit={handleSubmitProfile} profile={profile}/>)}
+            {openCongratsPopup && (<CongratsPopup open={openCongratsPopup} onClose={() => setOpenCongratsPopup(false)} />)}
+            {openPop && (<JobPopup open={openPop} onClose={closePop} openPopUp={openPopUp} currentPop={currentPop} openSubmitProfile={openSubmitProfile} openCongratsPopup={openCongratsPopup} openSubmit={handleOpenSubmitProfile} jobData={statusData} />)}
         </div>
     )
 }
