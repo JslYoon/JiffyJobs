@@ -75,7 +75,7 @@ export function StatusDashboard() {
             headers: { 'Content-Type': 'application/json' },
         }
 
-        const route = `http://localhost:4000/api/users/withDraw/${currentPop[0][0]}/${userEmail}`;
+        const route = `https://jiffyjobs-api-production.up.railway.app/api/users/withDraw/${currentPop[0][0]}/${userEmail}`;
         fetch(route, user)
         .then(async (response) => {
             const res = await response.json()
@@ -131,7 +131,7 @@ export function StatusDashboard() {
     useEffect(() => {
         async function getJobs() {
             const email = localStorage.getItem("email")
-            const route = `http://localhost:4000/api/users/jobsApplied/${email}`
+            const route = `https://jiffyjobs-api-production.up.railway.app/api/users/jobsApplied/${email}`
             fetch(route)
                 .then((response) => {
                     if (!response.ok) {
