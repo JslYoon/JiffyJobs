@@ -2,12 +2,29 @@ import React, { useEffect, useState } from 'react';
 import '../styles/Dashboard.css';
 import { Box, Card, Grid, CardMedia, Typography, } from '@mui/material'
 import dayjs from 'dayjs';
+import { JobPopup } from './JobPopup';
+import { ToastContainer, toast } from 'react-toastify';
+import { SubmitProfilePopup } from './SubmitPopup';
+import reject from '../images/Reject.png';
+import { CongratsPopup } from './CongratsPopup';
 
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 
 export function SavedJobDashboard() {
     const [statusData, setStatusData] = useState([]) 
     const [prevSize, setPrevSize] = useState([])
+    const [openPop, setOpenPop] = useState(false)
+    const [currentPop, setCurrentPop] = useState([])
+    const [profile, setProfile] = useState([])
+    const [gotProfile, setGotProfile] = useState(false);
+
+
+    const [ userEmail, setUserEmail ] = useState(localStorage.getItem("email"));
+    const [ userRole, setUserRole ] = useState(localStorage.getItem("user"));
+
+    const [openSubmitProfile, setOpenSubmitProfile] = useState(false);
+    const [openCongratsPopup, setOpenCongratsPopup] = useState(false);
+
 
     const randomImage = (seed) => {
         return `https://source.unsplash.com/random?${seed}`;
@@ -40,6 +57,145 @@ export function SavedJobDashboard() {
                 console.log(error);
             });
     }
+
+
+    // close popup
+    const closePop = () => {
+        setOpenPop(false);
+    }
+    
+    // open popup
+    const openPopUp = (key) => {
+        if (!userEmail) {
+            toast.dismiss()
+            toast.error('Please login to view!', {
+                icon: ({theme, type}) =>  <img src={reject} style={{ width: '24px', height: '24px', marginRight: '10px', marginBottom:'6px'}}/>,
+                progressStyle: {backgroundColor: '#C12020'},
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        } else {
+            setCurrentPop(key);
+            console.log(currentPop);
+            setOpenPop(true);
+        }
+    }
+
+
+    // open submit profile popup
+    const handleOpenSubmitProfile = () => {
+        if (userRole === 'provider') {
+            toast.dismiss()
+            toast.error('You can only apply to jobs as a Seeker!', {
+                icon: ({theme, type}) =>  <img src={reject} style={{ width: '24px', height: '24px', marginRight: '10px', marginBottom:'6px'}}/>,
+                progressStyle: {backgroundColor: '#C12020'},
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        } else if (!gotProfile) {
+            const requestedOptions = {
+                method: "GET",
+                headers: { 'Content-Type': 'application/json' },
+            }
+    
+            const route = `https://jiffyjobs-api-production.up.railway.app/api/users/getinfo/${userEmail}/${userRole}`;
+            fetch(route, requestedOptions)
+            .then(async (response) => {
+                const res = await response.json()
+                if (!response.ok) {
+                    throw new Error(res.message);
+                }
+                return res;
+            })
+            .then((data) => {
+                const user = [data.personal_info.first_name, data.personal_info.last_name, data.personal_info.school, data.personal_info.major, data.personal_info.grade, data.personal_info.personal_statement[0]];
+                setProfile(user);
+                setOpenSubmitProfile(true);
+                setGotProfile(true);
+            })
+        } else {
+            setOpenSubmitProfile(true);
+        }
+    };
+
+
+
+    const handleSubmitProfile = () => {
+        const user = {
+            method: "PUT",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                seeker_email: userEmail,
+                job_id: currentPop[0][0]
+            })
+        }
+
+        const route = "https://jiffyjobs-api-production.up.railway.app/api/users/apply";
+        fetch(route, user)
+        .then(async (response) => {
+            const res = await response.json()
+            if (!response.ok) {
+                throw new Error(res.message);
+            } 
+            return res;
+        })
+        .then((data) => {
+            handleCloseSubmitProfile();
+            setOpenCongratsPopup(true);
+        })
+        .catch((error) => {
+            const err = error.message;
+            if (err.startsWith('Error: ')) {
+                alert(err.slice(7));
+                toast.dismiss();
+                toast.error(err.slice(7), {
+                    icon: ({theme, type}) =>  <img src={reject} style={{ width: '24px', height: '24px', marginRight: '10px', marginBottom:'6px'}}/>,
+                    progressStyle: {backgroundColor: '#C12020'},
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light"
+                });
+            } else {
+                toast.error(err, {
+                    icon: ({theme, type}) =>  <img src={reject} style={{ width: '24px', height: '24px', marginRight: '10px', marginBottom:'6px'}}/>,
+                    progressStyle: {backgroundColor: '#C12020'},
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light"
+                });
+            }
+        });
+
+    };
+
+
+    // close submit profile popup
+    const handleCloseSubmitProfile = () => {
+        setOpenSubmitProfile(false);
+    };
+
 
     useEffect(() => {
         async function getJobs() {
