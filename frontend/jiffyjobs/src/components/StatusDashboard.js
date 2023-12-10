@@ -6,9 +6,9 @@ import dayjs from 'dayjs';
 import acceptedPicture from '../images/Accepted.png';
 import submittedPicture from '../images/Submitted.png';
 import rejectedPicture from '../images/Rejected.png';
-import { CongratsPopup } from './CongratsPopup';
 import { SubmitProfilePopup } from './SubmitPopup';
 import { WithdrawPopup } from './confirmWithdrawPopup';
+import { WithdrawNotify } from './WithdrawNotifPopup';
 
 import { JobPopup } from './JobPopup';
 import check from '../images/Check.png';
@@ -69,17 +69,13 @@ export function StatusDashboard() {
         }
     };
 
-    const handleSubmitProfile = () => {
+    const handleWithdrawProfile = () => {
         const user = {
-            method: "PUT",
+            method: "DELETE",
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                seeker_email: userEmail,
-                job_id: currentPop[0][0]
-            })
         }
 
-        const route = "https://jiffyjobs-api-production.up.railway.app/api/users/apply";
+        const route = `http://localhost:4000/api/users/withDraw/${currentPop[0][0]}/${userEmail}`;
         fetch(route, user)
         .then(async (response) => {
             const res = await response.json()
@@ -135,8 +131,7 @@ export function StatusDashboard() {
     useEffect(() => {
         async function getJobs() {
             const email = localStorage.getItem("email")
-            const route = "https://jiffyjobs-api-production.up.railway.app/api/users/jobsApplied/" + email
-
+            const route = `http://localhost:4000/api/users/jobsApplied/${email}`
             fetch(route)
                 .then((response) => {
                     if (!response.ok) {
@@ -145,10 +140,13 @@ export function StatusDashboard() {
                     return response.json();
                 })
                 .then((data) => {
+
                     const newJobData = data.map(function(obj) {
-                        return [[0, obj.title], [randomImage(obj.categories.toString().split(",")[0]), obj.job_poster], ["", obj.location], ["", obj.pay], ["", obj.description], ["", dayjs(new Date(obj.time[0])).format('MM/DD/YY h:mm A')  + " " + " - " + dayjs(new Date(obj.time[1])).format('h:mm A')], ["", obj.categories.toString()], ["", obj.status]]
+                        return [[obj._id, obj.title], [randomImage(obj.categories.toString().split(",")[0]), obj.job_poster], ["", obj.location], ["", obj.pay], ["", obj.description], ["", dayjs(new Date(obj.time[0])).format('MM/DD/YY h:mm A')  + " " + " - " + dayjs(new Date(obj.time[1])).format('h:mm A')], ["", obj.categories.toString()], ["", obj.status]]
                     });
                     setStatusData(newJobData)
+                    console.log(newJobData);
+
                     setPrevSize(newJobData.length)
 
                     
@@ -221,8 +219,8 @@ export function StatusDashboard() {
                     })}
                 </Grid>
             </Box>
-            {openSubmitProfile && (<WithdrawPopup open={openSubmitProfile} onClose={handleCloseSubmitProfile} onSubmit={handleSubmitProfile} profile={profile}/>)}
-            {openCongratsPopup && (<CongratsPopup open={openCongratsPopup} onClose={() => setOpenCongratsPopup(false)} />)}
+            {openSubmitProfile && (<WithdrawPopup open={openSubmitProfile} onClose={handleCloseSubmitProfile} onSubmit={handleWithdrawProfile} profile={profile}/>)}
+            {openCongratsPopup && (<WithdrawNotify open={openCongratsPopup} onClose={() => setOpenCongratsPopup(false)} />)}
             {openPop && (<JobPopup open={openPop} onClose={closePop} openPopUp={openPopUp} currentPop={currentPop} openSubmitProfile={openSubmitProfile} openCongratsPopup={openCongratsPopup} openSubmit={handleOpenSubmitProfile} jobData={statusData} />)}
         </div>
     )

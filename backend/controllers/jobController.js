@@ -16,7 +16,7 @@ import {getDistanceBetweenAddresses, distance} from '../utils/controllerFunction
 export const getJobs = async (req, res) => {
     try {
         const currentTime = new Date();
-        const jobs = await Jobs.find({ "time.0": { $gte: currentTime } });
+        const jobs = await Jobs.find({ "time.0": { $gte: currentTime }, "hired" : false });
 
         if (!jobs) {
             return handleNotFound(res, "No Jobs");
