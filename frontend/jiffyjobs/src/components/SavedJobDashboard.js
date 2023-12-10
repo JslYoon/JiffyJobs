@@ -75,14 +75,14 @@ export function SavedJobDashboard() {
                 Saved
             </div>
             <div className='header-two'>
-                View all the jobs you applied for!
+                View all the jobs you saved!
             </div>
             <Box className='progress-box'>
                 <Grid container className='progress-grid' rowSpacing={3} columnSpacing={3} width='70vw' style={{paddingBottom: '1%'}}>
                     {statusData.map((key) => {
                         return ( 
                             <Grid key={key} item> 
-                                <Card sx={{width: '264px', height: '264px'}} elevation={8} square={false} style={{overflow:'hidden', borderRadius: '15px'}} onClick={() => {savedJobs(key[8])}}>
+                                <Card sx={{width: '264px', height: '264px'}} elevation={8} square={false} style={{overflow:'hidden', borderRadius: '15px'}}>
                                     <div className='overall-card'>
                                         <CardMedia
                                             component="img"
@@ -90,7 +90,7 @@ export function SavedJobDashboard() {
                                             height="99px"
                                             image={randomImage(key[6][1].split(",")[0])}
                                         />
-                                        <div style={{position: 'absolute', maxWidth: '100%', top: '30%', left: '90%', textAlign: 'center', transform: 'translate(-50%, -50%)', whiteSpace: 'nowrap'}}>
+                                        <div style={{position: 'absolute', maxWidth: '100%', top: '30%', left: '90%', textAlign: 'center', transform: 'translate(-50%, -50%)', whiteSpace: 'nowrap', cursor: "pointer"}} onClick={() => {savedJobs(key[8])}}>
                                             <StarRoundedIcon
                                                 style={{ width: '40px', height: '40px', color: '#4A4FE4'}}
                                             />
@@ -114,11 +114,6 @@ export function SavedJobDashboard() {
                                                 Description: {key[4]}
                                             </Typography>
                                         </div>
-                                        <div style={{position: 'absolute', maxWidth: '100%', bottom: '15%', left: '50%', textAlign: 'center', transform: 'translate(-50%, -50%)', whiteSpace: 'nowrap', display: 'none'}}>
-                                            <Card sx={{width: '12.5vw', height: '2.5vw'}} elevation={8} square={false} style={{overflow:'hidden', borderRadius: '7px', fontFamily: 'Outfit', fontSize: '12px', fontWeight: '400', fontStyle: 'normal', backgroundColor: '#A4A4A4', display: 'inline-flex', justifyContent: 'center', alignItems: 'center'}}>
-                                                Withdraw Application
-                                            </Card>
-                                        </div>
                                     </div>
                                 </Card>
                             </Grid>
@@ -126,6 +121,9 @@ export function SavedJobDashboard() {
                     })}
                 </Grid>
             </Box>
+            {openSubmitProfile && (<SubmitProfilePopup open={openSubmitProfile} onClose={handleCloseSubmitProfile} onSubmit={handleSubmitProfile} profile={profile}/>)}
+            {openCongratsPopup && (<CongratsPopup open={openCongratsPopup} onClose={() => setOpenCongratsPopup(false)} />)}
+            {openPop && (<JobPopup open={openPop} onClose={closePop} openPopUp={openPopUp} currentPop={currentPop} openSubmitProfile={openSubmitProfile} openCongratsPopup={openCongratsPopup} openSubmit={handleOpenSubmitProfile} />)}
         </div>
     )
 }
