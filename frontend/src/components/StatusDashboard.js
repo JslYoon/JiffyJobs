@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Dashboard.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { Box, Link, Card, Grid, CardActionArea, Typography, CardMedia } from '@mui/material';
@@ -29,6 +30,8 @@ export function StatusDashboard() {
 
     const [ userEmail, setUserEmail ] = useState(localStorage.getItem("email"));
     const [ userRole, setUserRole ] = useState(localStorage.getItem("user"));
+
+    const navigate = useNavigate();
 
 
     // open popup
@@ -167,6 +170,10 @@ export function StatusDashboard() {
         }
     }, [statusData]);
 
+    const goToJobBoard = () => {
+        naviagte('./JobBoard')
+    }
+
     return (
         <div>
             <div className='header-one'>
@@ -245,7 +252,7 @@ export function StatusDashboard() {
                 </Grid>
             </Box>
             {openSubmitProfile && (<WithdrawPopup open={openSubmitProfile} onClose={handleCloseSubmitProfile} onSubmit={handleWithdrawProfile} profile={profile}/>)}
-            {openCongratsPopup && (<WithdrawNotify open={openCongratsPopup} onClose={() => setOpenCongratsPopup(false)} />)}
+            {openCongratsPopup && (<WithdrawNotify open={openCongratsPopup} onClose={() => setOpenCongratsPopup(false)} apply={goToJobBoard} />)}
             {openPop && (<JobPopup open={openPop} onClose={closePop} openPopUp={openPopUp} currentPop={currentPop} openSubmitProfile={openSubmitProfile} openCongratsPopup={openCongratsPopup} openSubmit={handleOpenSubmitProfile} jobData={statusData} />)}
         </div>
     )
