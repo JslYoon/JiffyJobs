@@ -15,8 +15,7 @@ export function WithdrawNotify({ open, onClose, apply}) {
 
     // close popups
     const handleApplyMore = () => {
-        setOpenCongratsPopup(false); 
-        setOpenPop(false); 
+        navigate('/JobBoard');
     };
 
     // goes to dashboard
