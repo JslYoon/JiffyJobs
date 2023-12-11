@@ -28,7 +28,7 @@ export function WithdrawNotify({ open, onClose, apply}) {
             <DialogContent style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                
                 <div style={{ textAlign: 'center', fontFamily: 'Outfit', width: '259px', height: '46px', marginTop: '24px' }}>
-                    <Typography style={{ fontFamily: 'Outfit', fontSize: '14px', fontWeight: 400 }}>You have successfully Withdrawn your profile.</Typography>
+                    <Typography style={{ fontFamily: 'Outfit', fontSize: '14px', fontWeight: 400 }}>You have successfully withdrawn your profile.</Typography>
                 </div>
             </DialogContent>
             <Divider style={{ width: '100%', height: '1.44px', paddingTop: '10px', fontWeight: 500 }} />

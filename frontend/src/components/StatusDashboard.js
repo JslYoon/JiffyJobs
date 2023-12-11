@@ -170,8 +170,10 @@ export function StatusDashboard() {
         }
     }, [statusData]);
 
+    const naviagte = useNavigate();
+    
     const goToJobBoard = () => {
-        naviagte('./JobBoard')
+        naviagte('../jobboard')
     }
 
     return (
@@ -188,7 +190,10 @@ export function StatusDashboard() {
                         return ( 
                             <Grid key={key} item> 
                                 <Link overlay underline="none" sx={{ color: 'text.tertiary', cursor: 'pointer' }} onClick={() => openPopUp(key)}>
-                                    <Card sx={{width: '264px', height: '264px'}} elevation={8} square={false} style={{overflow:'hidden', borderRadius: '15px'}}>
+                                    <Card sx={{
+                                        width: '264px', 
+                                        height: '264px'
+                                        }} elevation={8} square={false} style={{overflow:'hidden', borderRadius: '15px'}}>
                                         <div className='overall-card'>
                                             <div className='overlay' style={{
                                                 position: 'absolute',
