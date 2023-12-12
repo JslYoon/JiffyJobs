@@ -7,7 +7,7 @@ import { Dialog, Divider, Typography, DialogContentText, DialogContent,
         Stack,  } from '@mui/material';
 
 // handles congrats popup
-export function WithdrawNotify({ open, onClose}) {
+export function WithdrawNotify({ open, onClose, apply}) {
     const [openPop, setOpenPop] = useState(false)
     const [openCongratsPopup, setOpenCongratsPopup] = useState(false);
 
@@ -30,6 +30,7 @@ export function WithdrawNotify({ open, onClose}) {
                     <Typography style={{ fontFamily: 'Outfit', fontSize: '17px', fontWeight: 600, color: '#4A4FE4' }}>Withdrawn</Typography>
                 </div>
                 <div style={{ textAlign: 'center', fontFamily: 'Outfit', width: '259px', height: '46px', marginTop: '24px' }}>
+
                     <Typography style={{ fontFamily: 'Outfit', fontSize: '14px', fontWeight: 400 }}>You have successfully withdrawn your profile. You can always apply to more jobs in job board by clicking <span style={{textDecoration: 'underline', fontWeight: 600}}>Apply More</span>.</Typography>
                 </div>
             </DialogContent>
@@ -38,6 +39,7 @@ export function WithdrawNotify({ open, onClose}) {
                 <Button onClick={handleToDashboard} sx={{ border: '1px solid #5B5B5B', borderRadius: '7px', textTransform: 'none', color: '#5B5B5B', fontFamily: 'Outfit', fontSize: '14px', width: '145px', height: '32px', fontWeight: 400 }}>
                     Back to Dashboard
                 </Button>
+
                 <Button onClick={handleApplyMore} sx={{ border: '1px solid #D9D9D9', borderRadius: '7px', textTransform: 'none', color: 'white', backgroundColor: '#4A4FE4', '&:hover': {backgroundColor: '#4A4FE4'}, fontFamily: 'Outfit', fontSize: '14px', width: '145px', height: '32px', fontWeight: 400 }}>
                     Apply More
                 </Button>

@@ -169,6 +169,12 @@ export function StatusDashboard() {
         }
     }, [statusData]);
 
+    const naviagte = useNavigate();
+    
+    const goToJobBoard = () => {
+        naviagte('../jobboard')
+    }
+
     return (
         <div>
             <div className='header-one'>
@@ -184,7 +190,10 @@ export function StatusDashboard() {
                         return ( 
                             <Grid key={key} item> 
                                 <Link overlay underline="none" sx={{ color: 'text.tertiary', cursor: 'pointer' }} onClick={() => openPopUp(key)}>
-                                    <Card sx={{width: '264px', height: '264px'}} elevation={8} square={false} style={{overflow:'hidden', borderRadius: '15px'}}>
+                                    <Card sx={{
+                                        width: '264px', 
+                                        height: '264px'
+                                        }} elevation={8} square={false} style={{overflow:'hidden', borderRadius: '15px'}}>
                                         <div className='overall-card'>
                                             <div className='overlay' style={{
                                                 position: 'absolute',
@@ -257,6 +266,7 @@ export function StatusDashboard() {
                     </div>
                 )}
             </Box>
+
             {openCongratsPopup && (<WithdrawNotify open={openCongratsPopup} onClose={() => setOpenCongratsPopup(false)} />)}
             {openPop && (<JobPopup open={openPop} onClose={closePop} openPopUp={openPopUp} currentPop={currentPop} openCongratsPopup={openCongratsPopup} openSubmit={handleWithdrawProfile} jobData={statusData} />)}
         </div>
