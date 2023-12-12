@@ -67,7 +67,7 @@ export function PostedJobDashboard() {
                             {statusData.map((key) => {
                                 return ( 
                                     <Grid key={key} item> 
-                                        <Card sx={{width: '264px', height: '264px'}} elevation={8} square={false} style={{overflow:'hidden', borderRadius: '15px'}} onClick={() => {setJobID(key[8])}}>
+                                        <Card sx={{width: '264px', height: '264px', cursor:'pointer'}} elevation={8} square={false} style={{overflow:'hidden', borderRadius: '15px'}} onClick={() => {setJobID(key[8])}}>
                                             <div className='overall-card'>
                                                 <CardMedia
                                                     component="img"
@@ -82,16 +82,16 @@ export function PostedJobDashboard() {
                                                         <u>{key[0]}</u>
                                                     </Typography>
                                                     <Typography style={{fontFamily: 'Outfit', fontSize:"12px", paddingLeft:'16px', paddingRight:'10px', paddingTop:'15px', fontWeight: 400,}}>
-                                                        Pay: <span style={{ fontWeight: '500' }}>$</span><span style={{ fontWeight: '500' }}>{key[3][1]}</span>
+                                                        Pay: <span style={{ fontWeight: '500' }}>$</span><span style={{ fontWeight: '500' }}>{key[3]}</span>
                                                     </Typography>
                                                     <Typography style={{fontFamily: 'Outfit', fontSize:"12px", paddingLeft:'16px', paddingRight:'10px', fontWeight: 400,}}>
-                                                        Location: <span style={{ fontWeight: '500' }}>{<u>{key[2][1]}</u>}</span>
+                                                        Location: <span style={{ fontWeight: '500' }}>{<u>{key[2]}</u>}</span>
                                                     </Typography>
                                                     <Typography style={{fontFamily: 'Outfit', fontSize:"12px", paddingLeft:'16px', paddingRight:'10px', fontWeight: 400,}}>
-                                                        Time: <span style={{ fontWeight: '500' }}>{key[5][1]}</span>
+                                                        Time: <span style={{ fontWeight: '500' }}>{key[5]}</span>
                                                     </Typography>
                                                     <Typography style={{fontFamily: 'Outfit', fontSize:"12px", paddingLeft: '16px', paddingRight:'10px', position:'relative', overflow:'hidden', textOverflow:'ellipsis', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2, lineHeight: '1.1', height: '27px', fontWeight: 400,}}>
-                                                        Description: <span style={{ fontWeight: '500' }}>{key[4][1]}</span>
+                                                        Description: <span style={{ fontWeight: '500' }}>{key[4]}</span>
                                                     </Typography>
                                                 </div>
                                             </div>
