@@ -59,6 +59,8 @@ To learn more about our backend, please look at the following resources:
 - [Node.js Documentation](https://nodejs.org/docs/latest/api/) - learn more about Node.js
 - [Express.js Documentation](https://expressjs.com/) - learn more about Express.js 
 - [MongoDB Documentation](https://www.mongodb.com/docs/) - learn more about MongoDB
+- [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) - learn more about jsonwebtokens
+- [bcrypt](https://www.npmjs.com/package/bcrypt) - learn more about bcrypt 
 
 ## Snapshots
 
