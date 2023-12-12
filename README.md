@@ -50,14 +50,15 @@ This webapp was built with
 ## Learn More
 To learn more about the components we use, please look at the following resources:
 
-- [MUI Documentation](https://mui.com/material-ui/getting-started/) - learn about different MUI components 
+- [MUI Documentation](https://mui.com/material-ui/getting-started/) - learn about different MUI components
 - [Toastify Documentation](https://www.npmjs.com/package/react-toastify) - learn about alerts made with Toastify
 
-This project is a [Next.js](https://nextjs.org/) project, so learn more by Next.js by looking at the following resources:
 
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API
-- [Next.js GitHub Repository](https://github.com/vercel/next.js/) - for any feedback and contributions
+To learn more about our backend, please look at the following resources: 
+
+- [Node.js Documentation](https://nodejs.org/docs/latest/api/) - learn more about Node.js
+- [Express.js Documentation](https://expressjs.com/) - learn more about Express.js 
+- [MongoDB Documentation](https://www.mongodb.com/docs/) - learn more about MongoDB
 
 ## Snapshots
 
