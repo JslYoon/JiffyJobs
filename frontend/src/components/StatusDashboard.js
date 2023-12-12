@@ -2,13 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Dashboard.css';
 import { ToastContainer, toast } from 'react-toastify';
-import { Box, Link, Card, Grid, CardActionArea, Typography, CardMedia } from '@mui/material';
+import { Box, Link, Card, Grid, CardActionArea, Typography, CardMedia, Button } from '@mui/material';
 import dayjs from 'dayjs';
-import acceptedPicture from '../images/Accepted.png';
-import submittedPicture from '../images/Submitted.png';
-import rejectedPicture from '../images/Rejected.png';
-import { SubmitProfilePopup } from './SubmitPopup';
-import { WithdrawPopup } from './confirmWithdrawPopup';
+
 import { WithdrawNotify } from './WithdrawNotifPopup';
 import reject from '../images/Reject.png'
 
@@ -32,7 +28,6 @@ export function StatusDashboard() {
     const [ userRole, setUserRole ] = useState(localStorage.getItem("user"));
 
     const navigate = useNavigate();
-
 
     // open popup
     const openPopUp = (key) => {
@@ -139,6 +134,10 @@ export function StatusDashboard() {
         return `https://source.unsplash.com/random?${seed}`;
     };
 
+    const goToJobBoard = () => {   
+        navigate('/jobboard');
+    }
+
     useEffect(() => {
         async function getJobs() {
             const email = localStorage.getItem("email")
@@ -185,6 +184,7 @@ export function StatusDashboard() {
                 Check your the progress on your job applications!
             </div>
             <Box className='progress-box'>
+                {statusData.length > 0 ? (
                 <Grid container className='progress-grid' rowSpacing={3} columnSpacing={3} width='70vw' style={{paddingBottom: '1%'}}>
                     {statusData.map((key) => {
                         return ( 
@@ -224,20 +224,20 @@ export function StatusDashboard() {
 
                                         <div className='overall-card'>
                                             <div className={key[7][1] === 'submitted'? "status-card": ''} >
-                                                <Typography style={{fontFamily: 'Outfit', fontSize:"14px", paddingLeft:'16px', paddingRight:'10px', paddingTop:'10px'}}>
+                                                <Typography style={{fontFamily: 'Outfit', fontSize:"14px", paddingLeft:'16px', paddingRight:'10px', paddingTop:'10px', fontWeight: 500,}}>
                                                     <u>{key[0][1]}</u>
                                                 </Typography>
-                                                <Typography style={{fontFamily: 'Outfit', fontSize:"12px", paddingLeft:'16px', paddingRight:'10px', paddingTop:'15px'}}>
-                                                    Pay: ${key[3][1]}
+                                                <Typography style={{fontFamily: 'Outfit', fontSize:"12px", paddingLeft:'16px', paddingRight:'10px', paddingTop:'15px', fontWeight: 400,}}>
+                                                    Pay: <span style={{ fontWeight: '500' }}>$</span><span style={{ fontWeight: '500' }}>{key[3][1]}</span>
                                                 </Typography>
-                                                <Typography style={{fontFamily: 'Outfit', fontSize:"12px", paddingLeft:'16px', paddingRight:'10px'}}>
-                                                    Location: <u>{key[2][1]}</u>
+                                                <Typography style={{fontFamily: 'Outfit', fontSize:"12px", paddingLeft:'16px', paddingRight:'10px', fontWeight: 400,}}>
+                                                    Location: <span style={{ fontWeight: '500' }}>{<u>{key[2][1]}</u>}</span>
                                                 </Typography>
-                                                <Typography style={{fontFamily: 'Outfit', fontSize:"12px", paddingLeft:'16px', paddingRight:'10px'}}>
-                                                    Time: {key[5][1]}
+                                                <Typography style={{fontFamily: 'Outfit', fontSize:"12px", paddingLeft:'16px', paddingRight:'10px', fontWeight: 400,}}>
+                                                    Time: <span style={{ fontWeight: '500' }}>{key[5][1]}</span>
                                                 </Typography>
-                                                <Typography style={{fontFamily: 'Outfit', fontSize:"12px", paddingLeft: '16px', paddingRight:'10px', position:'relative', overflow:'hidden', textOverflow:'ellipsis', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2, lineHeight: '1.1', height: '26px'}}>
-                                                    Description: {key[4][1]}
+                                                <Typography style={{fontFamily: 'Outfit', fontSize:"12px", paddingLeft: '16px', paddingRight:'10px', position:'relative', overflow:'hidden', textOverflow:'ellipsis', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2, lineHeight: '1.1', height: '27px', fontWeight: 400,}}>
+                                                    Description: <span style={{ fontWeight: '500' }}>{key[4][1]}</span>
                                                 </Typography>
                                             </div>
 
@@ -255,10 +255,20 @@ export function StatusDashboard() {
                         )
                     })}
                 </Grid>
+                 ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '10vh', width:'65vw' }}>
+                        <div style={{ textAlign: 'center', marginTop: '20px', fontFamily: 'Outfit' }}>
+                            Currently you have not applied to any jobs.
+                        </div>
+                        <Button variant="contained" style={{ width: '200px', height: '34px', backgroundColor: '#4A4FE4', color: 'white', marginTop: '20px', fontSize: '14px', fontFamily: 'Outfit', fontWeight: 400, padding: '13px 18px', borderRadius: '8px' }} onClick={goToJobBoard}>
+                            <span style={{textTransform:'none'}}>Begin Your Job Search</span>
+                        </Button>
+                    </div>
+                )}
             </Box>
-            {openSubmitProfile && (<WithdrawPopup open={openSubmitProfile} onClose={handleCloseSubmitProfile} onSubmit={handleWithdrawProfile} profile={profile}/>)}
-            {openCongratsPopup && (<WithdrawNotify open={openCongratsPopup} onClose={() => setOpenCongratsPopup(false)} apply={goToJobBoard} />)}
-            {openPop && (<JobPopup open={openPop} onClose={closePop} openPopUp={openPopUp} currentPop={currentPop} openSubmitProfile={openSubmitProfile} openCongratsPopup={openCongratsPopup} openSubmit={handleOpenSubmitProfile} jobData={statusData} />)}
+
+            {openCongratsPopup && (<WithdrawNotify open={openCongratsPopup} onClose={() => setOpenCongratsPopup(false)} />)}
+            {openPop && (<JobPopup open={openPop} onClose={closePop} openPopUp={openPopUp} currentPop={currentPop} openCongratsPopup={openCongratsPopup} openSubmit={handleWithdrawProfile} jobData={statusData} />)}
         </div>
     )
 }
