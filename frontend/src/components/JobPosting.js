@@ -23,6 +23,7 @@ export function JobPosting() {
     const [openStartPop, setOpenStartPop] = useState(false)
     const [openSecondPop, setOpenSecondPop] = useState(false)
     const [searchInput, setSearchInput] = useState("");
+    const [searchEnter, setSearchEnter] = useState("");
 
     const categories = ['Arts', 'Catering', 'Childcare', 'Data Entry', 'Eldercare',
                         'Focus Groups', 'Food Services', 'Graphic Design', 'Home Services', 'IT Help',
@@ -692,7 +693,7 @@ export function JobPosting() {
     
 
     return {
-        searchInput,
+        searchEnter,
         renderJobPosting: (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 <Box style={{paddingTop: '3.9px', width: '1128px'}}> 
@@ -712,15 +713,14 @@ export function JobPosting() {
                                         value={searchInput} 
                                         onChange={(e) => {setSearchInput(e.target.value)}}
                                         onKeyDown={(e) => {
-                                            // if (e.key === 'Enter') {
-                                            //     handleSearchClick();
-                                            // }
-                                            // console.log(e)
+                                            if (e.key === 'Enter') {
+                                                setSearchEnter(e.target.value);
+                                            }
                                         }}
                                         InputProps={{
                                             endAdornment: (
                                                 <InputAdornment position="end">
-                                                    <Button onClick={() => {}} style={{ borderRadius: '8px', background: "#4348DB", color: 'white', minWidth: '47px', height: '47px', padding: '0', marginRight: '-6px'}}>
+                                                    <Button onClick={() => {setSearchEnter(searchInput)}} style={{ borderRadius: '8px', background: "#4348DB", color: 'white', minWidth: '47px', height: '47px', padding: '0', marginRight: '-6px'}}>
                                                         <SearchIcon />
                                                     </Button>
                                                 </InputAdornment>
