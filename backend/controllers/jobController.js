@@ -7,6 +7,7 @@ import {
 	handleServerError,
     handleBadRequest,
     } from "../utils/handler.js";
+import {getDistanceBetweenAddresses, distance} from '../utils/controllerFunctions.js'
 
 /**
  * 
@@ -20,7 +21,6 @@ export const getJobs = async (req, res) => {
         if (!jobs) {
             return handleNotFound(res, "No Jobs");
         }
-        console.log(jobs.length)
 
         return handleSuccess(res, jobs);
     } catch (error) {

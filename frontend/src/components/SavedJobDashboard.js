@@ -252,7 +252,7 @@ export function SavedJobDashboard() {
                     {statusData.map((key) => {
                         return ( 
                             <Grid key={key} item> 
-                                <Card sx={{width: '264px', height: '264px', cursor:'pointer'}} elevation={8} square={false} style={{overflow:'hidden', borderRadius: '15px'}} onClick={() => openPopUp(key)}>
+                                <Card sx={{width: '264px', height: '264px'}} elevation={8} square={false} style={{overflow:'hidden', borderRadius: '15px'}} onClick={() => openPopUp(key)}>
                                     <div className='overall-card'>
                                         <CardMedia
                                             component="img"

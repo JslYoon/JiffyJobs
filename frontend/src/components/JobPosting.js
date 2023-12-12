@@ -753,9 +753,6 @@ export function JobPosting() {
                                             if (e.key === 'Enter') {
                                                 setSearchEnter(e.target.value);
                                             }
-                                            if (searchInput === "") {
-                                                setSearchEnter("");
-                                            }
                                         }}
                                         InputProps={{
                                             endAdornment: (
