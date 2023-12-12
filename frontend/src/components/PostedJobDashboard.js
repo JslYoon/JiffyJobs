@@ -35,7 +35,9 @@ export function PostedJobDashboard() {
                 .then((data) => {
                     const sortedData = data.sort((a, b) => new Date(b.date_posted) - new Date(a.date_posted));
                     const newJobData = sortedData.map(function(obj) {
-                        return [obj.title, obj.job_poster, obj.location, obj.pay, obj.description, dayjs(new Date(obj.time[0])).format('MM/DD/YY h:mm A')  + " " + " - " + dayjs(new Date(obj.time[1])).format('h:mm A'), obj.categories.toString(), obj.status, obj._id]
+                        return [["", obj.title], [randomImage(obj.categories.toString().split(",")[0]), obj.job_poster], ["", obj.location], ["", obj.pay], ["", obj.description], ["", dayjs(new Date(obj.time[0])).format('MM/DD/YY h:mm A')  + " " + " - " + dayjs(new Date(obj.time[1])).format('h:mm A')], ["", obj.categories.toString()], ["", obj.status]]
+
+                        // return [obj.title, obj.job_poster, obj.location, obj.pay, obj.description, dayjs(new Date(obj.time[0])).format('MM/DD/YY h:mm A')  + " " + " - " + dayjs(new Date(obj.time[1])).format('h:mm A'), obj.categories.toString(), obj.status, obj._id]
                     });
                     setStatusData(newJobData)
                     setPrevSize(newJobData.length)
@@ -67,7 +69,7 @@ export function PostedJobDashboard() {
                             {statusData.map((key) => {
                                 return ( 
                                     <Grid key={key} item> 
-                                        <Card sx={{width: '264px', height: '264px'}} elevation={8} square={false} style={{overflow:'hidden', borderRadius: '15px'}} onClick={() => {setJobID(key[8])}}>
+                                        <Card sx={{width: '264px', height: '264px', cursor:'pointer'}} elevation={8} square={false} style={{overflow:'hidden', borderRadius: '15px'}} onClick={() => {setJobID(key[8])}}>
                                             <div className='overall-card'>
                                                 <CardMedia
                                                     component="img"

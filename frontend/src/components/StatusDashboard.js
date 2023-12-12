@@ -134,9 +134,9 @@ export function StatusDashboard() {
         return `https://source.unsplash.com/random?${seed}`;
     };
 
-    const goToJobBoard = () => {   
-        navigate('/jobboard');
-    }
+    // const goToJobBoard = () => {   
+    //     navigate('/jobboard');
+    // }
 
     useEffect(() => {
         async function getJobs() {
